@@ -3,6 +3,8 @@ import './App.css';
 import WebPlayBack from './Spotify/Playback';
 import Spotify from 'spotify-web-api-js';
 
+window.onSpotifyWebPlaybackSDKReady = () => {};
+
 const spotifyWebApi = new Spotify();
 class App extends React.Component {
   constructor() {
@@ -15,6 +17,7 @@ class App extends React.Component {
         name: 'Not Checked',
         image: '',
       },
+      playerState: null,
     };
 
     if (params.access_token) {
@@ -30,6 +33,12 @@ class App extends React.Component {
       hashParams[e[1]] = decodeURIComponent(e[2]);
     }
     return hashParams;
+  };
+  setPlayerState = (player) => {
+    this.setState({
+      playerState: player,
+    });
+    console.log(this.state);
   };
   componentDidMount = () => {
     if (localStorage.key('state')) {
@@ -56,6 +65,11 @@ class App extends React.Component {
     const toString = JSON.stringify(this.state.nowPlaying);
     localStorage.setItem('state', toString);
   };
+  pause = async () => {
+    spotifyWebApi.resume().then(() => {
+      console.log('Paused!');
+    });
+  };
 
   render() {
     return (
@@ -66,7 +80,9 @@ class App extends React.Component {
         <div>Now Playing: {this.state.nowPlaying.name}</div>
         <img src={this.state.nowPlaying.image} alt="album cover" style={{ width: 300 }}></img>
         <button onClick={() => this.getNowPlaying()}>Check Now Playing</button>
+
         <WebPlayBack
+          setPlayerState={this.setPlayerState}
           onPlayerRequestAccessToken={() => {
             const param = this.getHashParams();
             return param.access_token;

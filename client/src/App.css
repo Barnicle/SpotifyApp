@@ -9,3 +9,7 @@ div,
 button {
   margin: 15px;
 }
+
+.player__btn {
+  margin: 0;
+}
