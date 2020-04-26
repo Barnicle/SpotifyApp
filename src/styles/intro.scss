@@ -1,0 +1,40 @@
+.login-btn {
+  margin: 15px;
+  padding: 20px;
+  font-size: 1rem;
+  font-weight: bolder;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: $spotify-green;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  width: 15rem;
+  min-width: 160px;
+}
+
+.login-btn:hover {
+  background-color: #1ed760;
+  transition: all 1s ease;
+}
+button {
+  -webkit-appearance: button;
+  text-rendering: auto;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: center;
+  align-items: flex-start;
+  background-color: buttonface;
+  box-sizing: border-box;
+  margin: 0em;
+  overflow: visible;
+  font: 400 13.3333px Arial;
+  padding: 1px 6px;
+  border-width: 2px;
+  border-style: outset;
+  border-image: initial;
+}
