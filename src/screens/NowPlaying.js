@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { PlayBtn, PauseBtn, ForwardBtn, BackwardBtn } from '../images/svg/svg';
 export default class NowPlaying extends Component {
   togglePlay = async () => {
     await this.props.player;
@@ -13,9 +14,20 @@ export default class NowPlaying extends Component {
     await this.props.player;
     this.props.player.previousTrack().then(() => console.log('Next Track'));
   };
-
+  toggleBtn = () => {
+    return this.props.playerState.paused ? (
+      <a onClick={this.togglePlay}>
+        <PlayBtn />
+      </a>
+    ) : (
+      <a onClick={this.togglePlay}>
+        <PauseBtn />
+      </a>
+    );
+  };
   render() {
     let { album, artists, name } = this.props.playerState.track_window.current_track;
+    console.log(this.props);
     return (
       <React.Fragment>
         <div className="track-meta__container">
@@ -23,10 +35,14 @@ export default class NowPlaying extends Component {
           <h2 className="track-meta__artist">{artists[0].name}</h2>
           <h3 className="track-meta__song">{name}</h3>
         </div>
-        <div>
-          <button onClick={this.prevTrack}>Preveous track</button>
-          <button onClick={this.togglePlay}>Play</button>
-          <button onClick={this.nextTrack}>Next track</button>
+        <div className="player">
+          <a onClick={this.prevTrack}>
+            <BackwardBtn />
+          </a>
+          {this.toggleBtn()}
+          <a onClick={this.nextTrack}>
+            <ForwardBtn />
+          </a>
         </div>
       </React.Fragment>
     );

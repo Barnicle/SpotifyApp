@@ -72,9 +72,21 @@ class App extends React.Component {
     };
 
     return (
-      <div className="app">
+      <div className="app app__background">
         {!this.state.userAccessToken && <Intro />}
-
+        {playerLoaded && !playerSelected && (
+          <Fragment>
+            <a
+              className="select-device__notification"
+              href="https://open.spotify.com"
+              target="_blank"
+            >
+              <h2>
+                Select <span>Spotify App</span>
+              </h2>
+            </a>
+          </Fragment>
+        )}
         {userAccessToken && (
           <WebPlayBack {...webPlaybackSdkProps}>
             {playerLoaded && playerSelected && playerState && (

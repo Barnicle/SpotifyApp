@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 10px;
 }
 
 .track-meta__cover {
@@ -12,7 +13,24 @@
 
 .track-meta__artist {
   font-size: 2rem;
+  margin-top: 2em;
 }
 .track-meta__song {
   font-size: 1.5rem;
+  margin-top: 1em;
+}
+.player {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $spotify-black;
+  width: 100%;
+  padding: 20px;
+}
+
+.player__btn {
+  margin-left: 100px;
+  margin-right: 100px;
 }
