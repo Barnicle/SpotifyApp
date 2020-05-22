@@ -17,7 +17,6 @@ export default (callbacks) => {
 
   if (hashExists) {
     window.location.hash = '';
-
     // Let us know it's a successful authorization
     if (typeof callbacks.onSuccessfulAuthorization !== 'undefined') {
       callbacks.onSuccessfulAuthorization(hashObj.access_token);

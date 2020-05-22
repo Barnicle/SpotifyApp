@@ -92,6 +92,23 @@ export default class WebPlayBack extends Component {
     return new Promise((resolve) => this.player.on('ready', (data) => resolve(data)));
   }
 
+  selectDevice = async ({device_id})=>{
+    const token = this.props.onPlayerRequestAccessToken();
+    try{
+    fetch('https://api.spotify.com/v1/me/player',{
+      method: 'PUT',
+      body: JSON.stringify(
+        {device_ids: [
+      device_id]}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })}catch (error) {
+      console.log('Error', error);
+  }
+  }
+  
   componentDidMount = async () => {
     let {
       onPlayerLoading,
@@ -110,15 +127,15 @@ export default class WebPlayBack extends Component {
     // Setup the instance and the callbacks
     await this.setupWebPlaybackEvents();
     console.log('setupedWebplayback');
-
+    
     // Wait for device to be ready
     let device_data = await this.setupWaitingForDevice();
     onPlayerWaitingForDevice(device_data);
-    console.log('waitedfordivice');
-
-    // Wait for device to be selected
-    await this.waitForDeviceToBeSelected();
+    console.log('waited for device');
+    await this.selectDevice(device_data);
+    console.log('device selected');
     onPlayerDeviceSelected();
+    
     savePlaybackInstance(this.player);
   };
 

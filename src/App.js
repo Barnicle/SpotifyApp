@@ -18,8 +18,6 @@ class App extends React.Component {
       player: null,
       playerState: null,
     };
-    console.log(this.state);
-    if (this.state.userAccessToken) localStorage.setItem('state', JSON.stringify(this.state));
   }
   componentDidMount = () => {
     LoginCallBack({
@@ -28,17 +26,13 @@ class App extends React.Component {
     });
   };
 
-  componentWillUnmount = () => {
-    localStorage.setItem('state', JSON.stringify(this.state));
-  };
-
-  onSuccessfulAuthorization(accessToken) {
+  onSuccessfulAuthorization = (accessToken) => {
     this.setState({
       userAccessToken: accessToken,
     });
-  }
+  };
 
-  onAccessTokenExpiration() {
+  onAccessTokenExpiration = () => {
     this.setState({
       userDeviceId: null,
       userAccessToken: null,
@@ -48,7 +42,7 @@ class App extends React.Component {
     });
 
     console.error('The user access token has expired.');
-  }
+  };
 
   render() {
     let { userAccessToken, playerLoaded, playerSelected, playerState } = this.state;
@@ -73,20 +67,21 @@ class App extends React.Component {
 
     return (
       <div className="app app__background">
-        {!this.state.userAccessToken && <Intro />}
-        {playerLoaded && !playerSelected && (
-          <Fragment>
-            <a
-              className="select-device__notification"
-              href="https://open.spotify.com"
-              target="_blank"
-            >
-              <h2>
-                Select <span>Spotify App</span>
-              </h2>
-            </a>
-          </Fragment>
-        )}
+        {!userAccessToken && <Intro />}
+        
+        {/*{playerLoaded && !playerSelected && (*/}
+        {/*  <Fragment>*/}
+        {/*    <a*/}
+        {/*      className="select-device__notification"*/}
+        {/*      href="https://open.spotify.com"*/}
+        {/*      target="_blank"*/}
+        {/*    >*/}
+        {/*      <h2>*/}
+        {/*        Select <span>Spotify App</span>*/}
+        {/*      </h2>*/}
+        {/*    </a>*/}
+        {/*  </Fragment>*/}
+        {/*)}*/}
         {userAccessToken && (
           <WebPlayBack {...webPlaybackSdkProps}>
             {playerLoaded && playerSelected && playerState && (

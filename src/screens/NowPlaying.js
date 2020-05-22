@@ -27,7 +27,6 @@ export default class NowPlaying extends Component {
   };
   render() {
     let { album, artists, name } = this.props.playerState.track_window.current_track;
-    console.log(this.props);
     return (
       <React.Fragment>
         <div className="track-meta__container">
