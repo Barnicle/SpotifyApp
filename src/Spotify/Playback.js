@@ -17,12 +17,10 @@ export default class WebPlayBack extends Component {
       let {
         _options: { id: device_id },
       } = this.player;
-      
       this.clearStatePolling();
       // this.props.onPlayerWaitingForDevice({ device_id: device_id });
-      
-      // await this.waitForDeviceToBeSelected();
-      // this.props.onPlayerDeviceSelected();
+      await this.waitForDeviceToBeSelected();
+      this.props.onPlayerDeviceSelected();
     }
   };
 

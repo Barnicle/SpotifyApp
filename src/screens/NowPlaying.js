@@ -25,13 +25,21 @@ export default class NowPlaying extends Component {
       </a>
     );
   };
-
-  setToTimeFormat = (time_ms) => {
-    const time_h = Math.trunc(time_ms % 60000);
-    const time_s = Math.trunc(time_ms % 60000);
-    const time_m = Math.trunc(time_ms / 60000);
-    const time = `${time_m}:${time_s}`;
-    return time;
+  
+  //TODO нужно, чтобы когда минут 0 показывалось не 00, а 0.
+  msToTime = (ms) => {
+    const toTwoDigitFormat = (digit, format =2) => {
+      return (('00'+digit).slice(-format));
+    }
+    let s = Math.trunc((ms / 1000));
+    let m = Math.trunc(s / 60);
+    let h = Math.trunc(m / 60);
+    s = s % 60;
+    h = toTwoDigitFormat(h);
+    m = toTwoDigitFormat(m);
+    s = toTwoDigitFormat(s)
+    const time = [h, m, s];
+    return (`${time[0]!=0?time[0]+ ':':''}${time[1]}:${time[2]}`);
   };
 
   render() {
@@ -44,8 +52,8 @@ export default class NowPlaying extends Component {
           <img className="track-meta__cover" src={album.images[0].url} alt={name}></img>
           <h2 className="track-meta__artist">{artists[0].name}</h2>
           <h3 className="track-meta__song">{name}</h3>
-          <h3>{this.setToTimeFormat(duration_ms)}</h3>
-          <h3>{this.setToTimeFormat(position_ms)}</h3>
+          <h3>{this.msToTime(duration_ms)}</h3>
+          <h3>{this.msToTime(position_ms)}</h3>
         </div>
         <div className="player">
           <div className="track-position__container"></div>
