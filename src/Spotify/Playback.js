@@ -17,12 +17,12 @@ export default class WebPlayBack extends Component {
       let {
         _options: { id: device_id },
       } = this.player;
-
+      
       this.clearStatePolling();
-      this.props.onPlayerWaitingForDevice({ device_id: device_id });
-      console.log(state.playerSelected, 'ps');
-      await this.waitForDeviceToBeSelected();
-      this.props.onPlayerDeviceSelected();
+      // this.props.onPlayerWaitingForDevice({ device_id: device_id });
+      
+      // await this.waitForDeviceToBeSelected();
+      // this.props.onPlayerDeviceSelected();
     }
   };
 
@@ -38,6 +38,8 @@ export default class WebPlayBack extends Component {
     });
   };
 
+  
+  // Обновляет стейт через промежутки, после того как был подключен девайс
   waitForDeviceToBeSelected = () =>
     new Promise((resolve) => {
       this.deviceSelectedInterval = setInterval(() => {
@@ -58,7 +60,6 @@ export default class WebPlayBack extends Component {
     this.statePollingInterval = setInterval(async () => {
       let state = await this.player.getCurrentState();
       await this.handleState(state);
-      console.log('hadle state has finished');
     }, this.props.playerRefreshRateMs || 1000);
   };
 
@@ -104,9 +105,11 @@ export default class WebPlayBack extends Component {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
-    })}catch (error) {
+    })
+    }catch (error) {
       console.log('Error', error);
   }
+  
   }
   
   componentDidMount = async () => {
@@ -131,8 +134,9 @@ export default class WebPlayBack extends Component {
     // Wait for device to be ready
     let device_data = await this.setupWaitingForDevice();
     onPlayerWaitingForDevice(device_data);
-    console.log('waited for device');
     await this.selectDevice(device_data);
+    await this.waitForDeviceToBeSelected();
+    console.log('waited for device');
     console.log('device selected');
     onPlayerDeviceSelected();
     

@@ -49,8 +49,8 @@ class App extends React.Component {
 
     let webPlaybackSdkProps = {
       playerName: 'Spotify App',
-      playerInitialVolume: 1.0,
-      playerRefreshRateMs: 100,
+      playerInitialVolume: .7,
+      playerRefreshRateMs: 200, //как часто будет проверяться состояние на изменения
       playerAutoConnect: true,
       onPlayerRequestAccessToken: () => userAccessToken,
       onPlayerLoading: () => this.setState({ playerLoaded: true }),
@@ -65,23 +65,11 @@ class App extends React.Component {
       onPlayerError: (playerError) => console.error(playerError),
     };
 
+    
+    //TODO написать экран, когда переключают с активного плеера, на другой девайс
     return (
       <div className="app app__background">
         {!userAccessToken && <Intro />}
-        
-        {/*{playerLoaded && !playerSelected && (*/}
-        {/*  <Fragment>*/}
-        {/*    <a*/}
-        {/*      className="select-device__notification"*/}
-        {/*      href="https://open.spotify.com"*/}
-        {/*      target="_blank"*/}
-        {/*    >*/}
-        {/*      <h2>*/}
-        {/*        Select <span>Spotify App</span>*/}
-        {/*      </h2>*/}
-        {/*    </a>*/}
-        {/*  </Fragment>*/}
-        {/*)}*/}
         {userAccessToken && (
           <WebPlayBack {...webPlaybackSdkProps}>
             {playerLoaded && playerSelected && playerState && (
