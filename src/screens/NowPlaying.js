@@ -87,37 +87,42 @@ export default class NowPlaying extends Component {
           <h2 className="track-meta__artist">{artists[0].name}</h2>
           <h3 className="track-meta__song">{name}</h3>
         </div>
-        <div className="player">
-          <div>
-            <a onClick={this.prevTrack}>
-              <BackwardBtn />
-            </a>
-            {this.toggleBtn()}
-            <a onClick={this.nextTrack}>
-              <ForwardBtn />
-            </a>
-          </div>
-          <ProgressBarWrapper>
-            <h3>{this.msToTime(position_ms)}</h3>
- 
-            <StyledSlider type={'range'}
-                         min={0}
-                         max={duration_ms}
-                         value={position_ms}
-                         position={this.getProgressOfTrack(duration_ms, position_ms)}
-                         onChange={(e)=> this.handleSeek(e)}
-            />
-            
-            <h3>{this.msToTime(duration_ms)}</h3>
-          </ProgressBarWrapper>
+        <PlayerWrapper className="player">
+          <MainWrapper>
+            <div>
+              <a onClick={this.prevTrack}>
+                <BackwardBtn />
+              </a>
+              {this.toggleBtn()}
+              <a onClick={this.nextTrack}>
+                <ForwardBtn />
+              </a>
+            </div>
+            <ProgressBarWrapper>
+              <h3>{this.msToTime(position_ms)}</h3>
+    
+              <StyledSlider type={'range'}
+                            min={0}
+                            max={duration_ms}
+                            value={position_ms}
+                            position={this.getProgressOfTrack(duration_ms, position_ms)}
+                            onChange={(e)=> this.handleSeek(e)}
+              />
+    
+              <h3>{this.msToTime(duration_ms)}</h3>
+            </ProgressBarWrapper>
+          </MainWrapper>
+          <VolumeWrapper>
           <StyledSlider type={'range'}
                         min={0}
                         max={100}
-                        
+                        value={this.state.volume}
                         minWidth={'100px'}
                         position={this.getProgressOfTrack(100, this.state.volume)}
                         onChange={this.setVolume}/>
-        </div>
+          </VolumeWrapper>
+        </PlayerWrapper>
+      
       </React.Fragment>
     );
   }
@@ -179,4 +184,30 @@ align-items: center;
 justify-content: space-around;
 color: gray;
 font-size: .7rem;
+`
+
+const PlayerWrapper = styled.div`
+display: flex;
+flex-flow: row;
+justify-content: center;
+align-items: center;
+:last-child{
+flex-grow: 2;
+}
+`
+
+const MainWrapper= styled.div`
+display: flex;
+flex-flow: column;
+justify-content: center;
+align-items: center;
+margin-left: auto;
+margin-right: 0;
+`
+const VolumeWrapper= styled.div`
+display: flex;
+margin-left: auto;
+margin-right: 0;
+justify-content: center;
+align-items: center;
 `
