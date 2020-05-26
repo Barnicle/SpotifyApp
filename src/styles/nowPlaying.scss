@@ -22,15 +22,17 @@
 .player {
   position: absolute;
   bottom: 0;
+  flex-flow: column nowrap;
   display: flex;
   justify-content: center;
   align-items: center;
   background: $spotify-black;
+  min-width: 320px;
   width: 100%;
   padding: 20px;
 }
 
 .player__btn {
-  margin-left: 100px;
-  margin-right: 100px;
+  margin-left: 90px;
+  margin-right: 90px;
 }

@@ -49,8 +49,8 @@ class App extends React.Component {
 
     let webPlaybackSdkProps = {
       playerName: 'Spotify App',
-      playerInitialVolume: .7,
-      playerRefreshRateMs: 200, //как часто будет проверяться состояние на изменения
+      playerInitialVolume: .2,
+      playerRefreshRateMs: 300, //как часто будет проверяться состояние на изменения
       playerAutoConnect: true,
       onPlayerRequestAccessToken: () => userAccessToken,
       onPlayerLoading: () => this.setState({ playerLoaded: true }),
@@ -72,7 +72,7 @@ class App extends React.Component {
         {!userAccessToken && <Intro />}
         {userAccessToken && (
           <WebPlayBack {...webPlaybackSdkProps}>
-            {playerLoaded && playerSelected && playerState && (
+            {playerLoaded  && playerState && (
               <Fragment>
                 <NowPlaying playerState={playerState} player={this.state.player} />
               </Fragment>
