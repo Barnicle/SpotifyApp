@@ -32,7 +32,6 @@ html,
   font-weight: bolder;
   text-transform: uppercase;
   text-decoration: none;
-
   color: $spotify-green;
   width: 60%;
   margin: 20px;
@@ -42,28 +41,29 @@ html,
 
 svg {
   fill: #ffffff;
-}
-svg:hover {
-  fill: #b3b3b3;
+  :hover{
+    fill: #b3b3b3;
+
+  }
 }
 
-.app__background {
-  background: linear-gradient(1deg, #ffffff, $spotify-black);
-  background-size: 400% 400%;
-
-  animation: background__gradient 40s ease infinite;
-}
-@keyframes background__gradient {
-  0% {
-    background-position: 52% 0%;
-  }
-  50% {
-    background-position: 49% 100%;
-  }
-  100% {
-    background-position: 52% 0%;
-  }
-}
+//.app__background {
+//  background: linear-gradient(1deg, #ffffff, $spotify-black);
+//  background-size: 400% 400%;
+//
+//  animation: background__gradient 40s ease infinite;
+//}
+//@keyframes background__gradient {
+//  0% {
+//    background-position: 52% 0%;
+//  }
+//  50% {
+//    background-position: 49% 100%;
+//  }
+//  100% {
+//    background-position: 52% 0%;
+//  }
+//}
 
 @import './intro.scss';
 @import './nowPlaying.scss';

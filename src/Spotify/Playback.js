@@ -18,7 +18,7 @@ export default class WebPlayBack extends Component {
         _options: { id: device_id },
       } = this.player;
       this.clearStatePolling();
-      // this.props.onPlayerWaitingForDevice({ device_id: device_id });
+      this.props.onPlayerWaitingForDevice({ device_id: device_id });
       await this.waitForDeviceToBeSelected();
       this.props.onPlayerDeviceSelected();
     }
@@ -44,7 +44,6 @@ export default class WebPlayBack extends Component {
         if (this.player) {
           this.player.getCurrentState().then((state) => {
             if (state !== null) {
-              console.log(state, 'state');
               this.startStatePolling();
               clearInterval(this.deviceSelectedInterval);
               resolve(state);
@@ -109,7 +108,25 @@ export default class WebPlayBack extends Component {
   }
   
   }
-  
+  getUserInfo = async ()=>{
+    const token = this.props.onPlayerRequestAccessToken();
+    try{
+      fetch('https://api.spotify.com/v1/me',{
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      }).then(
+        user => user.json()
+      ).then(
+        data => {
+          
+          console.log(data);
+        }
+      )
+    }catch (error) {
+      console.log('Error', error);
+    }
+  }
   componentDidMount = async () => {
     let {
       onPlayerLoading,
@@ -137,7 +154,7 @@ export default class WebPlayBack extends Component {
     console.log('waited for device');
     console.log('device selected');
     onPlayerDeviceSelected();
-    
+    await this.getUserInfo();
     savePlaybackInstance(this.player);
   };
 

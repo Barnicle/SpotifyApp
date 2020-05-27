@@ -2,7 +2,7 @@
   "name": "spotifyapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "root": "",
   "dependencies": {
     "core-js": "^3.6.5",
     "node-sass": "^4.14.0",
@@ -26,9 +26,9 @@
       "not op_mini all"
     ],
     "development": [
-      "last 10 chrome version",
-      "last 10 firefox version",
-      "last 10 safari version"
+      "last 30 chrome version",
+      "last 30 firefox version",
+      "last 30 safari version"
     ]
   },
   "devDependencies": {

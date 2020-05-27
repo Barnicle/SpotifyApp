@@ -6,23 +6,40 @@ export default class NowPlaying extends Component {
   state ={
     volume: 20
   }
-  togglePlay = async () => {
-    // await this.props.player;
-    this.props.player.togglePlay();
-  };
+  togglePlay = async () => this.props.player.togglePlay();
   nextTrack = async () => {
-    // await this.props.player;
     this.props.player.nextTrack();
-  };
-  prevTrack = async () => {
-    // await this.props.player;
-    this.props.player.previousTrack();
-  };
+    console.log('next track')
+  }
+  prevTrack = async () => this.props.player.previousTrack();
+  shuffleTracks = async ()=>{
+    const token = this.props.onPlayerRequestAccessToken();
+    try{
+      fetch('https://api.spotify.com/v1/me/player',{
+        method: 'PUT',
+        body: JSON.stringify(
+          {device_ids: [
+              device_id]}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+    }catch (error) {
+      console.log('Error', error);
+    }
+    
+  }
+  
+  
   handleSeek = async (e)=> {
     const position = e.target.value;
     await this.props.player;
     this.props.player.seek(position);
   }
+  
+  
+  
   setVolume = async (e)=> {
     const volume = e.target.value;
     const position = e.target.value / 100;
@@ -45,7 +62,7 @@ export default class NowPlaying extends Component {
       </a>
     );
   };
-
+  
   
   //TODO если девайс не активен, то при нажатии на кнопки он должен все равно переключать трек, а при нажатии на "играть" если песня остановлена должен включить её на Spotify App
   //TODO сохранять последнюю громкость в localState;
@@ -78,8 +95,6 @@ export default class NowPlaying extends Component {
       duration: duration_ms,
       position: position_ms,
     } = this.props.playerState;
-    
-    console.log(this.state.volume)
     return (
       <React.Fragment>
         <div className="track-meta__container">
@@ -108,21 +123,26 @@ export default class NowPlaying extends Component {
                             position={this.getProgressOfTrack(duration_ms, position_ms)}
                             onChange={(e)=> this.handleSeek(e)}
               />
-    
+              
               <h3>{this.msToTime(duration_ms)}</h3>
             </ProgressBarWrapper>
           </MainWrapper>
-          <VolumeWrapper>
-          <StyledSlider type={'range'}
+          <VolumeWrapper className={'volume'}>
+          <StyledSlider
+                        type={'range'}
                         min={0}
                         max={100}
                         value={this.state.volume}
                         minWidth={'100px'}
-                        position={this.getProgressOfTrack(100, this.state.volume)}
+                        background = {`linear-gradient(
+    to right,
+    #b3b3b3 0 ${this.getProgressOfTrack(100, this.state.volume)}%,
+    #535353 ${this.getProgressOfTrack(100, this.state.volume)}% 100%
+  );`}
+                        // position={this.getProgressOfTrack(100, this.state.volume)}
                         onChange={this.setVolume}/>
           </VolumeWrapper>
         </PlayerWrapper>
-      
       </React.Fragment>
     );
   }
@@ -130,20 +150,23 @@ export default class NowPlaying extends Component {
 
 
 
-const StyledSlider = styled.input`
+const StyledSlider = styled.input.attrs(props =>{
+  style: {
+    background: props.background
+  }
+  }
+)`
   -webkit-appearance: none;
-  outline: none;
   min-width: ${props => props.minWidth || '300px'};
   height: 4px;
   border-radius: 5px;
   margin:0 1rem 0 1rem;
-  transform: ${props => props.trasform || 'none'};
-  background: linear-gradient(
-    to right,
-    #b3b3b3 0 ${(props) => props.position}%,
-    #535353 ${(props) => props.position}% 100%
-  );
-  
+  // background: linear-gradient(
+  //   to right,
+  //   #b3b3b3 0 ${(props) => props.position}%,
+  //   #535353 ${(props) => props.position}% 100%
+  // );
+  outline: none;
   ::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -153,26 +176,17 @@ const StyledSlider = styled.input`
   background: #1db954;
   border-radius: 50%;
 }
-
- ::-webkit-slider-thumb, ::-moz-range-thumb{
+  ::-moz-range-thumb{
   width: 10px;
   height: 10px;
   background: #1db954;
   }
+
   :hover{
-  ::-moz-range-thumb{
-  display: block;
-  }
-  ::-webkit-slider-thumb{
-  display: block;
-  }
-  background: linear-gradient(
-    to right,
-    #1db954 0 ${(props) => props.position}%,
-    #535353 ${(props) => props.position}% 100%
-  );
-  }
-  }
+  ::-moz-range-thumb{ display: block;}
+  ::-webkit-slider-thumb{ display: block;}
+  background: ${(props) => props.background}
+  }})
 `;
 
 
@@ -191,23 +205,19 @@ display: flex;
 flex-flow: row;
 justify-content: center;
 align-items: center;
-:last-child{
-flex-grow: 2;
-}
 `
 
 const MainWrapper= styled.div`
+position: absolute;
 display: flex;
 flex-flow: column;
 justify-content: center;
 align-items: center;
+margin-right: auto;
 margin-left: auto;
-margin-right: 0;
+bottom: 0;
 `
 const VolumeWrapper= styled.div`
 display: flex;
 margin-left: auto;
-margin-right: 0;
-justify-content: center;
-align-items: center;
 `
