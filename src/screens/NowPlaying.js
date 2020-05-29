@@ -3,54 +3,47 @@ import styled from "styled-components";
 import { PlayBtn, PauseBtn, ForwardBtn, BackwardBtn } from "../images/svg/svg";
 
 export default class NowPlaying extends Component {
-  state ={
-    volume: 20
-  }
+  state = {
+    volume: 20,
+  };
   togglePlay = async () => this.props.player.togglePlay();
   nextTrack = async () => {
     this.props.player.nextTrack();
-    console.log('next track')
-  }
+    console.log("next track");
+  };
   prevTrack = async () => this.props.player.previousTrack();
-  shuffleTracks = async ()=>{
+  shuffleTracks = async () => {
     const token = this.props.onPlayerRequestAccessToken();
-    try{
-      fetch('https://api.spotify.com/v1/me/player',{
-        method: 'PUT',
-        body: JSON.stringify(
-          {device_ids: [
-              device_id]}),
+    try {
+      fetch("https://api.spotify.com/v1/me/player", {
+        method: "PUT",
+        body: JSON.stringify({ device_ids: [device_id] }),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      })
-    }catch (error) {
-      console.log('Error', error);
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.log("Error", error);
     }
-    
-  }
-  
-  
-  handleSeek = async (e)=> {
+  };
+
+  handleSeek = async (e) => {
     const position = e.target.value;
     await this.props.player;
     this.props.player.seek(position);
-  }
-  
-  
-  
-  setVolume = async (e)=> {
+  };
+
+  setVolume = async (e) => {
     const volume = e.target.value;
     const position = e.target.value / 100;
     await this.props.player;
     await this.props.player.setVolume(position);
     this.setState({
-    volume: volume
-    })
-  }
-  
-  
+      volume: volume,
+    });
+  };
+
   toggleBtn = () => {
     return this.props.playerState.paused ? (
       <a onClick={this.togglePlay}>
@@ -62,8 +55,7 @@ export default class NowPlaying extends Component {
       </a>
     );
   };
-  
-  
+
   //TODO если девайс не активен, то при нажатии на кнопки он должен все равно переключать трек, а при нажатии на "играть" если песня остановлена должен включить её на Spotify App
   //TODO сохранять последнюю громкость в localState;
   msToTime = (ms) => {
@@ -98,7 +90,11 @@ export default class NowPlaying extends Component {
     return (
       <React.Fragment>
         <div className="track-meta__container">
-          <img className="track-meta__cover" src={album.images[0].url} alt={name}></img>
+          <img
+            className="track-meta__cover"
+            src={album.images[0].url}
+            alt={name}
+          ></img>
           <h2 className="track-meta__artist">{artists[0].name}</h2>
           <h3 className="track-meta__song">{name}</h3>
         </div>
@@ -115,32 +111,28 @@ export default class NowPlaying extends Component {
             </div>
             <ProgressBarWrapper>
               <h3>{this.msToTime(position_ms)}</h3>
-    
-              <StyledSlider type={'range'}
-                            min={0}
-                            max={duration_ms}
-                            value={position_ms}
-                            position={this.getProgressOfTrack(duration_ms, position_ms)}
-                            onChange={(e)=> this.handleSeek(e)}
+
+              <StyledSlider
+                type={"range"}
+                min={0}
+                max={duration_ms}
+                value={position_ms}
+                onChange={(e) => this.handleSeek(e)}
               />
-              
+
               <h3>{this.msToTime(duration_ms)}</h3>
             </ProgressBarWrapper>
           </MainWrapper>
-          <VolumeWrapper className={'volume'}>
-          <StyledSlider
-                        type={'range'}
-                        min={0}
-                        max={100}
-                        value={this.state.volume}
-                        minWidth={'100px'}
-                        background = {`linear-gradient(
-    to right,
-    #b3b3b3 0 ${this.getProgressOfTrack(100, this.state.volume)}%,
-    #535353 ${this.getProgressOfTrack(100, this.state.volume)}% 100%
-  );`}
-                        // position={this.getProgressOfTrack(100, this.state.volume)}
-                        onChange={this.setVolume}/>
+          <VolumeWrapper className={"volume"}>
+            <StyledSlider
+              type={"range"}
+              min={0}
+              max={100}
+              volume={this.state.volume}
+              minWidth={"100px"}
+              position={this.getProgressOfTrack(100, this.state.volume)}
+              onChange={this.setVolume}
+            />
           </VolumeWrapper>
         </PlayerWrapper>
       </React.Fragment>
@@ -148,76 +140,66 @@ export default class NowPlaying extends Component {
   }
 }
 
-
-
-const StyledSlider = styled.input.attrs(props =>{
-  style: {
-    background: props.background
-  }
-  }
-)`
+const StyledSlider = styled.input`
   -webkit-appearance: none;
-  min-width: ${props => props.minWidth || '300px'};
+  min-width: ${(props) => props.minWidth || "300px"};
   height: 4px;
   border-radius: 5px;
-  margin:0 1rem 0 1rem;
-  // background: linear-gradient(
-  //   to right,
-  //   #b3b3b3 0 ${(props) => props.position}%,
-  //   #535353 ${(props) => props.position}% 100%
-  // );
+  margin: 0 1rem 0 1rem;
   outline: none;
+
   ::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  display: none;
-  width: 10px;
-  height: 10px;
-  background: #1db954;
-  border-radius: 50%;
-}
-  ::-moz-range-thumb{
-  width: 10px;
-  height: 10px;
-  background: #1db954;
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+    width: 10px;
+    height: 10px;
+    background: #1db954;
+    border-radius: 50%;
+  }
+  ::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: #1db954;
   }
 
-  :hover{
-  ::-moz-range-thumb{ display: block;}
-  ::-webkit-slider-thumb{ display: block;}
-  background: ${(props) => props.background}
-  }})
+  :hover {
+    ::-moz-range-thumb {
+      display: block;
+    }
+    ::-webkit-slider-thumb {
+      display: block;
+    }
+  }
 `;
 
-
-
 const ProgressBarWrapper = styled.div`
-display: flex;
-flex-flow: row nowrap;
-align-items: center;
-justify-content: space-around;
-color: gray;
-font-size: .7rem;
-`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-around;
+  color: gray;
+  font-size: 0.7rem;
+`;
 
 const PlayerWrapper = styled.div`
-display: flex;
-flex-flow: row;
-justify-content: center;
-align-items: center;
-`
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+`;
 
-const MainWrapper= styled.div`
-position: absolute;
-display: flex;
-flex-flow: column;
-justify-content: center;
-align-items: center;
-margin-right: auto;
-margin-left: auto;
-bottom: 0;
-`
-const VolumeWrapper= styled.div`
-display: flex;
-margin-left: auto;
-`
+const MainWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+  bottom: 0;
+`;
+const VolumeWrapper = styled.div`
+  display: flex;
+  margin-left: auto;
+`;
