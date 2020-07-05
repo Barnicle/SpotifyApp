@@ -1,10 +1,45 @@
 import React, { Fragment } from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
 import WebPlayBack from './Spotify/Playback';
 import LoginCallBack from './Spotify/LoginCallBack';
 import Intro from './screens/intro';
 import NowPlaying from './screens/NowPlaying';
+
 window.onSpotifyWebPlaybackSDKReady = () => {};
 
+const GlobalStyle = createGlobalStyle`
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-width: 320px;
+}
+svg {
+  fill: #ffffff;
+  :hover{
+    fill: #b3b3b3;
+
+  }
+}
+`;
+const StyledApp = styled.div`
+  min-width: 570px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
 class App extends React.Component {
   constructor() {
     super();
@@ -17,19 +52,16 @@ class App extends React.Component {
       playerSelected: false,
       player: null,
       playerState: null,
+    };
   }
-  
-  }
-    
+
   componentDidMount = () => {
     LoginCallBack({
       onSuccessfulAuthorization: this.onSuccessfulAuthorization.bind(this),
       onAccessTokenExpiration: this.onAccessTokenExpiration.bind(this),
     });
   };
-  
 
-  
   onSuccessfulAuthorization = (accessToken) => {
     this.setState({
       userAccessToken: accessToken,
@@ -50,10 +82,10 @@ class App extends React.Component {
 
   render() {
     let { userAccessToken, playerLoaded, playerSelected, playerState } = this.state;
-    
+
     let webPlaybackSdkProps = {
       playerName: 'Spotify App',
-      playerInitialVolume: .2,
+      playerInitialVolume: 0.2,
       playerRefreshRateMs: 100, //как часто будет проверяться состояние на изменения
       playerAutoConnect: true,
       onPlayerRequestAccessToken: () => userAccessToken,
@@ -67,24 +99,25 @@ class App extends React.Component {
       },
       onPlayerError: (playerError) => console.error(playerError),
     };
-  
-    
-    
+
     //TODO написать экран, когда переключают с активного плеера, на другой девайс
     return (
-      <div className="app app__background">
-        {!userAccessToken && <Intro />}
-        {userAccessToken && !playerSelected && <div>Waiting for device to be selected</div>}
-        {userAccessToken  && (
-          <WebPlayBack {...webPlaybackSdkProps}>
-            {playerLoaded && playerSelected  && playerState && (
-              <Fragment>
-                <NowPlaying playerState={playerState} player={this.state.player} />
-              </Fragment>
-            )}
-          </WebPlayBack>
-        )}
-      </div>
+      <Fragment>
+        <GlobalStyle />
+        <StyledApp>
+          {!userAccessToken && <Intro />}
+          {userAccessToken && !playerSelected && <div>Waiting for device to be selected</div>}
+          {userAccessToken && (
+            <WebPlayBack {...webPlaybackSdkProps}>
+              {playerLoaded && playerSelected && playerState && (
+                <Fragment>
+                  <NowPlaying playerState={playerState} player={this.state.player} />
+                </Fragment>
+              )}
+            </WebPlayBack>
+          )}
+        </StyledApp>
+      </Fragment>
     );
   }
 }

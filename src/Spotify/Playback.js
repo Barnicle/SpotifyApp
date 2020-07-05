@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment } from 'react';
 
 export default class WebPlayBack extends Component {
   deviceSelectedInterval = null;
@@ -26,7 +26,7 @@ export default class WebPlayBack extends Component {
 
   waitForSpotify = () => {
     return new Promise((resolve) => {
-      if ("Spotify" in window) {
+      if ('Spotify' in window) {
         resolve();
       } else {
         window.onSpotifyWebPlaybackSDKReady = () => {
@@ -39,7 +39,6 @@ export default class WebPlayBack extends Component {
   // Обновляет стейт через промежутки, после того как был подключен девайс
   waitForDeviceToBeSelected = () =>
     new Promise((resolve) => {
-      console.log("waiting");
       this.deviceSelectedInterval = setInterval(() => {
         if (this.player) {
           this.player.getCurrentState().then((state) => {
@@ -68,7 +67,7 @@ export default class WebPlayBack extends Component {
       name: this.props.playerName,
       volume: this.props.playerInitialVolume,
       getOAuthToken: async (callback) => {
-        if (typeof this.props.onPlayerRequestAccessToken !== "undefined") {
+        if (typeof this.props.onPlayerRequestAccessToken !== 'undefined') {
           let userAccessToken = await this.props.onPlayerRequestAccessToken();
           callback(userAccessToken);
         }
@@ -76,62 +75,45 @@ export default class WebPlayBack extends Component {
     });
 
     //setting up error handlers
-    this.player.on("initialization_error", (e) =>
-      this.props.onPlayerError(e.message)
-    );
-    this.player.on("authentication_error", (e) =>
-      this.props.onPlayerError(e.message)
-    );
-    this.player.on("account_error", (e) => this.props.onPlayerError(e.message));
-    this.player.on("playback_error", (e) =>
-      this.props.onPlayerError(e.message)
-    );
-    this.player.on(
-      "player_state_changed",
-      async (state) => await this.handleState(state)
-    );
-    this.player.on("ready", (data) =>
-      this.props.onPlayerWaitingForDevice(data)
-    );
+    this.player.on('initialization_error', (e) => this.props.onPlayerError(e.message));
+    this.player.on('authentication_error', (e) => this.props.onPlayerError(e.message));
+    this.player.on('account_error', (e) => this.props.onPlayerError(e.message));
+    this.player.on('playback_error', (e) => this.props.onPlayerError(e.message));
+    this.player.on('player_state_changed', async (state) => await this.handleState(state));
+    this.player.on('ready', (data) => this.props.onPlayerWaitingForDevice(data));
 
     if (this.props.playerAutoConnect) this.player.connect();
   };
 
   setupWaitingForDevice() {
-    return new Promise((resolve) =>
-      this.player.on("ready", (data) => resolve(data))
-    );
+    return new Promise((resolve) => this.player.on('ready', (data) => resolve(data)));
   }
 
   selectDevice = async ({ device_id }) => {
     const token = this.props.onPlayerRequestAccessToken();
     try {
-      fetch("https://api.spotify.com/v1/me/player", {
-        method: "PUT",
+      fetch('https://api.spotify.com/v1/me/player', {
+        method: 'PUT',
         body: JSON.stringify({ device_ids: [device_id] }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
     } catch (error) {
-      console.log("Error", error);
+      throw new Error(error.message);
     }
   };
   getUserInfo = async () => {
     const token = this.props.onPlayerRequestAccessToken();
     try {
-      fetch("https://api.spotify.com/v1/me", {
+      await fetch('https://api.spotify.com/v1/me', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
-        .then((user) => user.json())
-        .then((data) => {
-          console.log(data);
-        });
+      }).then((user) => user.json());
     } catch (error) {
-      console.log("Error", error);
+      throw new Error(error.message);
     }
   };
   componentDidMount = async () => {
@@ -147,11 +129,9 @@ export default class WebPlayBack extends Component {
 
     // Wait for Spotify to load player
     await this.waitForSpotify();
-    console.log("waitedforSpotify");
 
     // Setup the instance and the callbacks
     await this.setupWebPlaybackEvents();
-    console.log("setupedWebplayback");
 
     // Wait for device to be ready
     let device_data = await this.setupWaitingForDevice();
@@ -159,10 +139,9 @@ export default class WebPlayBack extends Component {
 
     await this.selectDevice(device_data);
     await this.waitForDeviceToBeSelected();
-    console.log("waited for device");
-    console.log("device selected");
+
     onPlayerDeviceSelected();
-    await this.getUserInfo();
+    // await this.getUserInfo();
     savePlaybackInstance(this.player);
   };
 

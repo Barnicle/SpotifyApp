@@ -1,20 +1,28 @@
-import React, { Component } from 'react';
+import React, { Component, F } from 'react';
+import styled from 'styled-components';
 import Login from '../Spotify/Login.js';
 
-export default class IntroScreen extends Component {
-  buttonClick(e) {
-    e.preventDefault();
-    console.log(e.target);
-    Login.logInWithSpotify();
+const LoginButton = styled.button`
+  margin: 15px;
+  padding: 20px;
+  font-size: 1rem;
+  font-weight: bolder;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #1db954;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  width: 15rem;
+  min-width: 160px;
+  outline: none;
+  :hover {
+    background-color: #1ed760;
+    transition: all 1s ease;
   }
+`;
 
-  render() {
-    return (
-      <div>
-        <button className="login-btn login-btn__hover" onClick={this.buttonClick}>
-          Log in with Spotify
-        </button>
-      </div>
-    );
-  }
-}
+const IntroScreen = () => (
+  <LoginButton onClick={() => Login.logInWithSpotify()}>Log in with Spotify</LoginButton>
+);
+export default IntroScreen;

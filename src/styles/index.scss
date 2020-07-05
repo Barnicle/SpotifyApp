@@ -41,9 +41,8 @@ html,
 
 svg {
   fill: #ffffff;
-  :hover{
+  :hover {
     fill: #b3b3b3;
-
   }
 }
 
@@ -65,5 +64,4 @@ svg {
 //  }
 //}
 
-@import './intro.scss';
 @import './nowPlaying.scss';

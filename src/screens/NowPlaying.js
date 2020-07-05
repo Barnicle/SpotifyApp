@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import { PlayBtn, PauseBtn, ForwardBtn, BackwardBtn } from "../images/svg/svg";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import { PlayBtn, PauseBtn, ForwardBtn, BackwardBtn } from '../images/svg/svg';
 
 export default class NowPlaying extends Component {
   state = {
@@ -9,22 +9,22 @@ export default class NowPlaying extends Component {
   togglePlay = async () => this.props.player.togglePlay();
   nextTrack = async () => {
     this.props.player.nextTrack();
-    console.log("next track");
+    console.log('next track');
   };
   prevTrack = async () => this.props.player.previousTrack();
   shuffleTracks = async () => {
     const token = this.props.onPlayerRequestAccessToken();
     try {
-      fetch("https://api.spotify.com/v1/me/player", {
-        method: "PUT",
+      fetch('https://api.spotify.com/v1/me/player', {
+        method: 'PUT',
         body: JSON.stringify({ device_ids: [device_id] }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
     } catch (error) {
-      console.log("Error", error);
+      console.log('Error', error);
     }
   };
 
@@ -60,7 +60,7 @@ export default class NowPlaying extends Component {
   //TODO сохранять последнюю громкость в localState;
   msToTime = (ms) => {
     const toTwoDigitFormat = (digit, format = 2) => {
-      return ("00" + digit).slice(-format);
+      return ('00' + digit).slice(-format);
     };
     let s = Math.trunc(ms / 1000);
     let m = Math.trunc(s / 60);
@@ -68,33 +68,19 @@ export default class NowPlaying extends Component {
     s = s % 60;
     s = toTwoDigitFormat(s);
     const time = [h, m, s];
-    ("");
-    return `${time[0] != 0 ? time[0] + ":" : ""}${
-      time[1] == "00" ? "0" : time[1]
-    }:${time[2]}`;
+    ('');
+    return `${time[0] != 0 ? time[0] + ':' : ''}${time[1] == '00' ? '0' : time[1]}:${time[2]}`;
   };
 
-  getProgressOfTrack = (duration, position) =>
-    Math.trunc(position * 100) / duration;
+  getProgressOfTrack = (duration, position) => Math.trunc(position * 100) / duration;
 
   render() {
-    let {
-      album,
-      artists,
-      name,
-    } = this.props.playerState.track_window.current_track;
-    let {
-      duration: duration_ms,
-      position: position_ms,
-    } = this.props.playerState;
+    let { album, artists, name } = this.props.playerState.track_window.current_track;
+    let { duration: duration_ms, position: position_ms } = this.props.playerState;
     return (
       <React.Fragment>
         <div className="track-meta__container">
-          <img
-            className="track-meta__cover"
-            src={album.images[0].url}
-            alt={name}
-          ></img>
+          <img className="track-meta__cover" src={album.images[0].url} alt={name}></img>
           <h2 className="track-meta__artist">{artists[0].name}</h2>
           <h3 className="track-meta__song">{name}</h3>
         </div>
@@ -113,23 +99,24 @@ export default class NowPlaying extends Component {
               <h3>{this.msToTime(position_ms)}</h3>
 
               <StyledSlider
-                type={"range"}
+                type={'range'}
                 min={0}
                 max={duration_ms}
                 value={position_ms}
+                position={this.getProgressOfTrack(duration_ms, position_ms)}
                 onChange={(e) => this.handleSeek(e)}
               />
 
               <h3>{this.msToTime(duration_ms)}</h3>
             </ProgressBarWrapper>
           </MainWrapper>
-          <VolumeWrapper className={"volume"}>
+          <VolumeWrapper>
             <StyledSlider
-              type={"range"}
+              type={'range'}
               min={0}
               max={100}
-              volume={this.state.volume}
-              minWidth={"100px"}
+              value={this.state.volume}
+              minWidth={'100px'}
               position={this.getProgressOfTrack(100, this.state.volume)}
               onChange={this.setVolume}
             />
@@ -140,9 +127,13 @@ export default class NowPlaying extends Component {
   }
 }
 
-const StyledSlider = styled.input`
+const StyledSlider = styled.input.attrs((props) => ({
+  style: {
+    background: `linear-gradient(to right, #1db954 0 ${props.position}%, #282828 ${props.position}% 100%)`,
+  },
+}))`
   -webkit-appearance: none;
-  min-width: ${(props) => props.minWidth || "300px"};
+  min-width: ${(props) => props.minWidth || '300px'};
   height: 4px;
   border-radius: 5px;
   margin: 0 1rem 0 1rem;

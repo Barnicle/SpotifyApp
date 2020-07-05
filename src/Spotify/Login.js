@@ -5,7 +5,7 @@ export default {
     let scopes =
       'streaming user-read-private user-read-email user-modify-playback-state user-read-currently-playing user-read-playback-state';
     let scopes_encoded = scopes.replace(' ', '%20');
-
+    //редирект на сайт спотифая, чтобы получить токен
     window.location = [
       'https://accounts.spotify.com/authorize',
       `?client_id=${client_id}`,
