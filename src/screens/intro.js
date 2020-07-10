@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Login from '../Spotify/Login.js';
 
 const LoginButton = styled.button`
-  margin: 15px;
   padding: 20px;
   font-size: 1rem;
   font-weight: bolder;

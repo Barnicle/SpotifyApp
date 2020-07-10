@@ -13,6 +13,8 @@ export default {
       `&scope=${scopes_encoded}`,
       '&response_type=token',
       '&show_dialog=true',
+      'SameSite=None',
+      'Secure',
     ].join('');
   },
 };

@@ -1,43 +1,18 @@
 import React, { Fragment } from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import WebPlayBack from './Spotify/Playback';
 import LoginCallBack from './Spotify/LoginCallBack';
 import Intro from './screens/intro';
 import NowPlaying from './screens/NowPlaying';
-
+import GlobalStyle from './styles/GlobalStyle';
 window.onSpotifyWebPlaybackSDKReady = () => {};
 
-const GlobalStyle = createGlobalStyle`
-*,
-*::after,
-*::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body,
-html,
-#root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  min-width: 320px;
-}
-svg {
-  fill: #ffffff;
-  :hover{
-    fill: #b3b3b3;
-
-  }
-}
-`;
 const StyledApp = styled.div`
-  min-width: 570px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  background: url('./images/background-logo__intro.jpg');
+  place-items: center;
+  width: 100%;
   height: 100%;
 `;
 class App extends React.Component {
@@ -106,13 +81,11 @@ class App extends React.Component {
         <GlobalStyle />
         <StyledApp>
           {!userAccessToken && <Intro />}
-          {userAccessToken && !playerSelected && <div>Waiting for device to be selected</div>}
+          {userAccessToken && !playerSelected && <p>Waiting for device to be selected</p>}
           {userAccessToken && (
             <WebPlayBack {...webPlaybackSdkProps}>
               {playerLoaded && playerSelected && playerState && (
-                <Fragment>
-                  <NowPlaying playerState={playerState} player={this.state.player} />
-                </Fragment>
+                <NowPlaying playerState={playerState} player={this.state.player} />
               )}
             </WebPlayBack>
           )}

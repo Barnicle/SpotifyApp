@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { PlayBtn, PauseBtn, ForwardBtn, BackwardBtn } from '../images/svg/svg';
-
+import Player from './components/Player';
+import TrackMeta from './components/TrackInfo';
+import StyledSlider from '../styles/StyledSlider';
 export default class NowPlaying extends Component {
   state = {
     volume: 20,
@@ -75,18 +77,13 @@ export default class NowPlaying extends Component {
   getProgressOfTrack = (duration, position) => Math.trunc(position * 100) / duration;
 
   render() {
-    let { album, artists, name } = this.props.playerState.track_window.current_track;
     let { duration: duration_ms, position: position_ms } = this.props.playerState;
     return (
       <React.Fragment>
-        <div className="track-meta__container">
-          <img className="track-meta__cover" src={album.images[0].url} alt={name}></img>
-          <h2 className="track-meta__artist">{artists[0].name}</h2>
-          <h3 className="track-meta__song">{name}</h3>
-        </div>
-        <PlayerWrapper className="player">
+        <TrackMeta {...this.props.playerState.track_window.current_track} />
+        <PlayerWrapper>
           <MainWrapper>
-            <div>
+            <StyledControls>
               <a onClick={this.prevTrack}>
                 <BackwardBtn />
               </a>
@@ -94,7 +91,7 @@ export default class NowPlaying extends Component {
               <a onClick={this.nextTrack}>
                 <ForwardBtn />
               </a>
-            </div>
+            </StyledControls>
             <ProgressBarWrapper>
               <h3>{this.msToTime(position_ms)}</h3>
 
@@ -110,58 +107,49 @@ export default class NowPlaying extends Component {
               <h3>{this.msToTime(duration_ms)}</h3>
             </ProgressBarWrapper>
           </MainWrapper>
-          <VolumeWrapper>
-            <StyledSlider
-              type={'range'}
-              min={0}
-              max={100}
-              value={this.state.volume}
-              minWidth={'100px'}
-              position={this.getProgressOfTrack(100, this.state.volume)}
-              onChange={this.setVolume}
-            />
-          </VolumeWrapper>
+
+          <StyledSlider
+            type={'range'}
+            min={0}
+            max={100}
+            value={this.state.volume}
+            minWidth={'100px'}
+            position={this.getProgressOfTrack(100, this.state.volume)}
+            onChange={this.setVolume}
+          />
         </PlayerWrapper>
       </React.Fragment>
     );
   }
 }
-
-const StyledSlider = styled.input.attrs((props) => ({
-  style: {
-    background: `linear-gradient(to right, #1db954 0 ${props.position}%, #282828 ${props.position}% 100%)`,
-  },
-}))`
-  -webkit-appearance: none;
-  min-width: ${(props) => props.minWidth || '300px'};
-  height: 4px;
-  border-radius: 5px;
-  margin: 0 1rem 0 1rem;
-  outline: none;
-
-  ::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    display: none;
-    width: 10px;
-    height: 10px;
-    background: #1db954;
-    border-radius: 50%;
+const PlayerWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  place-items: center;
+  background: black;
+  width: 100%;
+  padding: 30px;
+  @media (max-width: 750px) {
+    grid-template-columns: auto;
+    grid-template-rows: 1fr auto;
+    grid-gap: 2rem;
+    padding: 10px;
   }
-  ::-moz-range-thumb {
-    width: 10px;
-    height: 10px;
-    background: #1db954;
+`;
+const MainWrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 150px;
+  @media (max-width: 750px) {
+    margin-left: 0;
   }
-
-  :hover {
-    ::-moz-range-thumb {
-      display: block;
-    }
-    ::-webkit-slider-thumb {
-      display: block;
-    }
-  }
+`;
+const StyledControls = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const ProgressBarWrapper = styled.div`
@@ -171,26 +159,4 @@ const ProgressBarWrapper = styled.div`
   justify-content: space-around;
   color: gray;
   font-size: 0.7rem;
-`;
-
-const PlayerWrapper = styled.div`
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-const MainWrapper = styled.div`
-  position: absolute;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  margin-right: auto;
-  margin-left: auto;
-  bottom: 0;
-`;
-const VolumeWrapper = styled.div`
-  display: flex;
-  margin-left: auto;
 `;
