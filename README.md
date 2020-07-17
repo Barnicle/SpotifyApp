@@ -2,6 +2,8 @@ Simple Spotify Player
 
 
 Tech stack: React, Sass, Spotify Api, Spotify Playback SDK<br/>
-<b>npm i</b>to install dependencies <br/>
-  To start <b>npm start</b><br/>
+
+<b>npm i</b>для установки зависимостей <br/>
+  Запуск <b>npm start</b><br/>
+  Если у Вас бесплатный аккаунт, то необходимо будет вручную переключиться на плеер(ограничения спотифая)
   ![](screen_capture.gif)
